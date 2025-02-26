@@ -18,6 +18,8 @@ extension MapView {
         var showSearchModal: Bool = false
         var position: MapCameraPosition = .userLocation(followsHeading: true, fallback: .automatic)
         var locationAuthorized: Bool = false
+        var showAlert = false
+        var showSheet = false
         private(set) var lookAroundScene: MKLookAroundScene?
         private(set) var route: MKRoute?
         private(set)  var recentSearches: [String] = [String]()
@@ -57,7 +59,7 @@ extension MapView {
             default:
                 self.locationAuthorized = false
             }
-    }
+        }
         
         
         func search(for query: String, resultType:MKLocalSearch.ResultType = .pointOfInterest ) {

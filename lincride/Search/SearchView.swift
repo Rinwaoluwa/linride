@@ -9,21 +9,14 @@ import SwiftUI
 import MapKit
 
 struct SearchView: View {
-    var viewModel: MapView.ViewModel
-    let searchText: Binding<String>
-    let suggestions: [String]
-    let onClear: () -> Void
-    let onCancel: () -> Void
-    let onTapSuggestion: ( String) -> Void
-    
-    
-    
-    @State private var isEditing = false
+    @State var mapScreenViewModel: MapView.ViewModel
+    @State private var viewModel = SearchViewViewModel()
     @FocusState private var isFocused: Bool
     
-    
+    @Environment(\.managedObjectContext) var context
     
     var body: some View {
+        
         VStack {
             // Search bar
             HStack {
@@ -31,18 +24,19 @@ struct SearchView: View {
                     Image(systemName: "magnifyingglass") // Search icon
                         .foregroundColor(.gray)
                     
-                    TextField("Search Maps", text: searchText)
+                    TextField("Search Maps", text: $mapScreenViewModel.searchQuery)
                         .focused($isFocused)
                         .autocorrectionDisabled(true)
                         .onChange(of: isFocused) { oldValue, newValue in
                             withAnimation {
-                                isEditing = newValue
+                                viewModel.isEditing = newValue
                             }
                         }
                     Image(systemName: "multiply.circle") // clear icon
                         .foregroundColor(.gray)
                         .onTapGesture {
-                            onClear()
+                            mapScreenViewModel.searchQuery = ""
+                            
                         }
                 }
                 .padding(10)
@@ -53,8 +47,8 @@ struct SearchView: View {
                     Button("Cancel") {
                         withAnimation {
                             isFocused   = false
-                            searchText.wrappedValue = ""
-                            onCancel()
+                            mapScreenViewModel.searchQuery = ""
+                            mapScreenViewModel.showSearchModal = false
                         }
                     }
                     .foregroundColor(.blue)
@@ -63,14 +57,14 @@ struct SearchView: View {
             }
             .padding()
             // Suggestion searches
-            if isEditing {
-                if suggestions.isEmpty && !searchText.wrappedValue.isEmpty {
+            if viewModel.isEditing {
+                if mapScreenViewModel.recentSearches.isEmpty && !$mapScreenViewModel.searchQuery.wrappedValue.isEmpty {
                     VStack(spacing: 10) {
                         Spacer()
                         Image(systemName: "multiply.circle")
                             .font(.system(size: 30))
                             .foregroundColor(.red)
-                            
+                        
                         Text("No location found")
                             .font(.headline)
                             .foregroundColor(.gray)
@@ -78,18 +72,24 @@ struct SearchView: View {
                         
                     }
                 } else {
-                    
                     List {
-                        Section(header: Text(suggestions.isEmpty ? "" : "Suggestions").foregroundColor(.gray)) {
-                            ForEach(suggestions, id: \.hashValue) { suggestion in
-                                
+                        Section(header: Text(mapScreenViewModel.recentSearches.isEmpty ? "" : "Suggestions").foregroundColor(.gray)) {
+                            ForEach(mapScreenViewModel.recentSearches, id: \.hashValue) { suggestion in
                                 HStack {
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.gray)
                                     Text(suggestion).onTapGesture {
-                                        onTapSuggestion(suggestion)
+                                        mapScreenViewModel.search(for: suggestion)
+                                        mapScreenViewModel.showSearchModal = false
+                                        mapScreenViewModel.searchQuery = suggestion
                                     }
                                     Spacer()
+                                    Image(systemName: "bookmark.fill")
+                                        .foregroundColor(.gray).onTapGesture {
+                                            viewModel.savedSuggestedLocation(suggestion)
+                                        }
+                                    
+                                    Spacer().frame(width: 10)
                                 }
                             }
                         }
@@ -101,9 +101,16 @@ struct SearchView: View {
             Spacer()
         }
         .onAppear {
-            
             withAnimation {
                 isFocused = true
+            }
+        }.onDisappear {
+            if(!viewModel.savedLocations.isEmpty) {
+                viewModel.savedLocations.forEach { address in
+                    let _ = SavedLocation(name: "Place", address: address, timestamp: Date(), context: context)
+                    PersistenceController.shared.save()
+                }
+                
             }
         }
     }
@@ -113,9 +120,9 @@ struct SearchView: View {
 //    @State var search = ""
 //    SearchView(searchText: $search, suggestions: [String]()) {
 //    } onCancel: {
-//        
+//
 //    } onTapSuggestion: { suggestion in
 //        print("SUGGESTION: \(suggestion)")
 //    }
-//    
+//
 //}

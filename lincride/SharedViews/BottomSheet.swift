@@ -29,13 +29,35 @@ struct BottomSheet<Content: View>: View {
     var body: some View {
         VStack {
             Spacer()
-            
             VStack {
                 // Handle for dragging
                 RoundedRectangle(cornerRadius: 2.5)
                     .frame(width: 40, height: 5)
                     .foregroundColor(.gray)
                     .padding(.top, 10)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let newHeight = sheetHeight - value.translation.height
+                                if newHeight >= UIScreen.main.bounds.height * 0.1 &&
+                                    newHeight <= UIScreen.main.bounds.height * 0.8 {
+                                    sheetHeight = newHeight
+                                }
+                            }
+                            .onEnded { value in
+                                if sheetHeight > mediumDetent * 0.8 {
+                                    withAnimation(.spring()) {
+                                        sheetHeight = mediumDetent
+                                        self.showSheet = true
+                                    }
+                                } else {
+                                    withAnimation(.spring()) {
+                                        sheetHeight = smallDetent
+                                        self.showSheet = false
+                                    }
+                                }
+                            }
+                    )
                 
                 // Your bottom sheet content here
                 content()
@@ -46,30 +68,14 @@ struct BottomSheet<Content: View>: View {
             .frame(maxWidth: .infinity)
             .background(.ultraThinMaterial)
             .cornerRadius(16, corners: [.topLeft, .topRight])
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        let newHeight = sheetHeight - value.translation.height
-                        if newHeight >= UIScreen.main.bounds.height * 0.1 &&
-                            newHeight <= UIScreen.main.bounds.height * 0.8 {
-                            sheetHeight = newHeight
-                        }
-                    }
-                    .onEnded { value in
-                        if sheetHeight > mediumDetent * 0.8 {
-                            withAnimation(.spring()) {
-                                sheetHeight = mediumDetent
-                                self.showSheet = true
-                            }
-                        } else {
-                            withAnimation(.spring()) {
-                                sheetHeight = smallDetent
-                                self.showSheet = false
-                            }
-                        }
-                    }
-            )
-        }
+        }.onChange(of: showSheet, { _, _ in
+            // if show sheet is false set sheet height to medium height
+            if(!showSheet) {
+                withAnimation {
+                    sheetHeight = smallDetent
+                }
+            }
+        })
         .ignoresSafeArea(edges: .bottom)
     }
 }

@@ -20,13 +20,6 @@ struct SearchBar: View {
                 
                 // Custom search bar that navigates when tapped
                 ZStack {
-//                    NavigationLink(
-//                        destination: SearchScreen(searchText: $searchText),
-//                        isActive: $isSearchActive
-//                    ) {
-//                        EmptyView()
-//                    }
-                    
                     Button(action: {
                         isSearchActive = true
                     }) {

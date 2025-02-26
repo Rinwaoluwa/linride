@@ -7,18 +7,7 @@
 
 import Foundation
 
-
-struct FavoriteItem {
-    let icon: String
-    let title: String
-    let subtitle: String
-    let value: String
-}
-
-
-struct Location {
-    let latitude: Double
-    let longitude: Double
-    let timestamp: Date
-    let name: String
+struct SuggestionSearch {
+    let id: String
+    let address: String
 }

@@ -9,23 +9,24 @@ import SwiftUI
 import MapKit
 
 struct LookAroundView: View {
-    let lookAroundScene: MKLookAroundScene?
-    let selectedResult: MKMapItem?
-    let route: MKRoute?
+    //    let lookAroundScene: MKLookAroundScene?
+    //    let selectedResult: MKMapItem?
+    //    let route: MKRoute?
+    var viewModel: MapView.ViewModel
     
     private var travelTime: String? {
-        guard let route else { return nil }
+        let route = viewModel.route
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .abbreviated
         formatter.allowedUnits = [.hour, .minute]
-        return formatter.string(from: route.expectedTravelTime)
+        return formatter.string(from: route?.expectedTravelTime ?? 00)
     }
     
     var body: some View {
-        LookAroundPreview(initialScene: lookAroundScene)
+        LookAroundPreview(initialScene: viewModel.lookAroundScene)
             .overlay(alignment: .bottomTrailing) {
                 HStack {
-                    Text("\(selectedResult?.name ?? "")")
+                    Text("\(viewModel.selectedLocation?.name ?? "")")
                     if let travelTime {
                         Text(travelTime)
                     }
@@ -33,6 +34,13 @@ struct LookAroundView: View {
                 .font(.caption)
                 .foregroundStyle(.white)
                 .padding(10)
+            }
+            .onChange(of: viewModel.selectedLocation) {
+                viewModel.getLookAroundScene()
+            }
+            .onAppear {
+                viewModel.getLookAroundScene()
+                
             }
     }
     

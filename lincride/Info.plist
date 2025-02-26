@@ -4,5 +4,10 @@
 <dict>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array/>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UILaunchScreen</key>
+		<string>Launch Screen.storyboard</string>
+	</dict>
 </dict>
 </plist>
