@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct SuggestionSearch {
+struct SearchSuggestion {
     let id: String
     let address: String
+    var isSelected: Bool = false
 }

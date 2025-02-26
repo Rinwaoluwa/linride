@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23507" systemVersion="24C101" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="SavedLocation" representedClassName="SavedLocation" syncable="YES" codeGenerationType="class">
         <attribute name="address_" optional="YES" attributeType="String"/>
+        <attribute name="locationId_" optional="YES" attributeType="String"/>
         <attribute name="name_" optional="YES" attributeType="String"/>
         <attribute name="timestamp_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>

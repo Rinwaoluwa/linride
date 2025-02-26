@@ -13,9 +13,9 @@ extension SearchView {
     class SearchViewViewModel {
         var isEditing = false
         private(set) var locationIsSaved = false
-        private(set) var savedLocations = [String]()
+        private(set) var savedLocations = [SearchSuggestion]()
         
-        func savedSuggestedLocation(_ location: String) {
+        func savedSuggestedLocation(_ location: SearchSuggestion) {
             savedLocations.append(location)
         }
         func setLocationIsSaved(_ locationIsSaved: Bool) {

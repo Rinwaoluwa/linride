@@ -16,13 +16,14 @@ extension MapView {
         var searchQuery = ""
         var selectedLocation: MKMapItem?
         var showSearchModal: Bool = false
+        private(set) var isLoadingLocation: Bool = false
         var position: MapCameraPosition = .userLocation(followsHeading: true, fallback: .automatic)
-        var locationAuthorized: Bool = false
+        var locationAuthorized: Bool? = nil
         var showAlert = false
         var showSheet = false
         private(set) var lookAroundScene: MKLookAroundScene?
         private(set) var route: MKRoute?
-        private(set)  var recentSearches: [String] = [String]()
+        var searchSuggestions: [SearchSuggestion] = [SearchSuggestion]()
         private(set)  var searchResults: [MKMapItem] = [MKMapItem]()
         private(set) var region: MKCoordinateRegion?
         private let locationManager = CLLocationManager()
@@ -35,6 +36,9 @@ extension MapView {
             self.region =  MKCoordinateRegion(
                 center: userLocation, span: MKCoordinateSpan(latitudeDelta: 0.1,longitudeDelta: 0.1)
             )
+            
+            let status = locationManager.authorizationStatus
+            locationAuthorized = status == .authorizedWhenInUse || status == .authorizedAlways
         }
         
         func requestLocationPermission() {
@@ -51,19 +55,25 @@ extension MapView {
         func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
             switch manager.authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
-                self.locationAuthorized = true
+                updateAuthorizationStatus(true)
             case .notDetermined:
                 locationManager.requestWhenInUseAuthorization()
             case .denied, .restricted:
-                self.locationAuthorized = false
+                updateAuthorizationStatus(false)
             default:
-                self.locationAuthorized = false
+                updateAuthorizationStatus(false)
             }
         }
         
+        func updateAuthorizationStatus(_ isAuthorized: Bool) {
+            DispatchQueue.main.async {
+                self.locationAuthorized = isAuthorized
+            }
+            
+        }
         
         func search(for query: String, resultType:MKLocalSearch.ResultType = .pointOfInterest ) {
-            //TODO: ADD IS LOADING
+            self.isLoadingLocation = true
             let userLocation = locationManager.location?.coordinate ?? lagosCoordinates
             let request = MKLocalSearch.Request()
             request.naturalLanguageQuery = query
@@ -79,7 +89,8 @@ extension MapView {
                 DispatchQueue.main.async {
                     let result =  response?.mapItems ?? []
                     self.searchResults = result
-                    self.recentSearches = result.compactMap{self.formatAddress(from: $0.placemark)}
+                    self.searchSuggestions = result.compactMap{self.formatAddress(from: $0)}
+                    self.isLoadingLocation = false
                 }
             }
         }
@@ -106,17 +117,18 @@ extension MapView {
                 route = response?.routes.first
             }
         }
-        func formatAddress(from placemark: MKPlacemark) -> String {
+        func formatAddress(from mapItem: MKMapItem) -> SearchSuggestion {
+            //placemark: MKPlacemark
             let addressParts = [
-                placemark.subThoroughfare,  // House/building number
-                placemark.thoroughfare,     // Street name
-                placemark.locality,         // City
-                placemark.administrativeArea, // State/Region
-                placemark.postalCode,       // ZIP code
-                placemark.country           // Country
+                mapItem.placemark.subThoroughfare,  // House/building number
+                mapItem.placemark.thoroughfare,     // Street name
+                mapItem.placemark.locality,         // City
+                mapItem.placemark.administrativeArea, // State/Region
+                mapItem.placemark.postalCode,       // ZIP code
+                mapItem.placemark.country           // Country
             ]
-            
-            return addressParts.compactMap { $0 }.joined(separator: ", ")
+            let  formattedAddress = addressParts.compactMap { $0 }.joined(separator: ", ")
+            return SearchSuggestion(id: mapItem.placemark.region?.identifier ?? "", address: formattedAddress)
         }
     }
 }

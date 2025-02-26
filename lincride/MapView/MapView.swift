@@ -11,8 +11,9 @@ import CoreLocation
 
 struct MapView: View {
     @State private var viewModel = ViewModel()
-    @FetchRequest(fetchRequest: SavedLocation.fetch(), animation: .none) var locations
+    @FetchRequest(fetchRequest: SavedLocation.fetch(), animation: .bouncy) var locations
     @Environment(\.managedObjectContext) var context
+    @Environment(\.scenePhase) var scenePhase
     
     var body: some View {
         ZStack {
@@ -42,7 +43,7 @@ struct MapView: View {
                         .padding([.top, .horizontal])
                 }
             }).onChange(of: viewModel.locationAuthorized, { oldValue, newValue in
-                if !viewModel.locationAuthorized {
+                if let authorized = viewModel.locationAuthorized, !authorized {
                     viewModel.showAlert = true
                 }
             })
@@ -54,7 +55,7 @@ struct MapView: View {
                     Utils().openAppSettings()
                 }
             } message: {
-                Text("Please grant location permission in settings to use this feature.")
+                Text("Please grant location permission in settings to use LincRide.")
             }
             .ignoresSafeArea(edges: .bottom)
             // Custom bottom sheet
@@ -73,6 +74,7 @@ struct MapView: View {
                         }
                     FavoritesView { favoriteItem in
                         viewModel.search(for: favoriteItem.value)
+                        viewModel.searchQuery = favoriteItem.value
                         viewModel.showSheet = false
                     }
                     Spacer().frame(height: 8)
@@ -115,6 +117,12 @@ struct MapView: View {
                             viewModel.showSearchModal = false
                         }
                     }
+            }
+        }.onChange(of: scenePhase) { oldValue, newValue in
+            if newValue == .active  {
+                if let authorized = viewModel.locationAuthorized, !authorized {
+                    viewModel.showAlert = true
+                }
             }
         }
     }

@@ -24,18 +24,24 @@ extension SavedLocation {
         get { timestamp_ ?? Date() }
         set { timestamp_ = newValue }
     }
+    var locationId: String {
+        get { locationId_ ?? "" }
+        set { locationId_ = newValue }
+    }
     
     
     
     convenience init(
         name: String,
         address: String,
+        locationId: String,
                      timestamp: Date,
                      context: NSManagedObjectContext) {
         self.init(context: context)
         self.name = name
         self.address = address
         self.timestamp = timestamp
+        self.locationId = locationId
     }
     
     static func delete(location: SavedLocation) {

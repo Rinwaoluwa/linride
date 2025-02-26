@@ -58,7 +58,12 @@ struct SearchView: View {
             .padding()
             // Suggestion searches
             if viewModel.isEditing {
-                if mapScreenViewModel.recentSearches.isEmpty && !$mapScreenViewModel.searchQuery.wrappedValue.isEmpty {
+                
+                if mapScreenViewModel.isLoadingLocation {
+                    LoadingView()
+                }
+                
+                if mapScreenViewModel.searchSuggestions.isEmpty && !$mapScreenViewModel.searchQuery.wrappedValue.isEmpty && !mapScreenViewModel.isLoadingLocation {
                     VStack(spacing: 10) {
                         Spacer()
                         Image(systemName: "multiply.circle")
@@ -73,20 +78,26 @@ struct SearchView: View {
                     }
                 } else {
                     List {
-                        Section(header: Text(mapScreenViewModel.recentSearches.isEmpty ? "" : "Suggestions").foregroundColor(.gray)) {
-                            ForEach(mapScreenViewModel.recentSearches, id: \.hashValue) { suggestion in
+                        Section(header: Text(mapScreenViewModel.searchSuggestions.isEmpty ? "" : "Suggestions").foregroundColor(.gray)) {
+                            ForEach(mapScreenViewModel.searchSuggestions, id: \.id) { suggestion in
                                 HStack {
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.gray)
-                                    Text(suggestion).onTapGesture {
-                                        mapScreenViewModel.search(for: suggestion)
+                                    Text(suggestion.address).onTapGesture {
+                                        mapScreenViewModel.search(for: suggestion.address)
                                         mapScreenViewModel.showSearchModal = false
-                                        mapScreenViewModel.searchQuery = suggestion
+                                        mapScreenViewModel.searchQuery = suggestion.address
                                     }
                                     Spacer()
-                                    Image(systemName: "bookmark.fill")
+                                    Image(systemName: suggestion.isSelected ? "bookmark.fill" : "bookmark")
                                         .foregroundColor(.gray).onTapGesture {
-                                            viewModel.savedSuggestedLocation(suggestion)
+                                            if let index = mapScreenViewModel.searchSuggestions.firstIndex(where: { $0.id == suggestion.id }) {
+                                                if !mapScreenViewModel.searchSuggestions[index].isSelected { // Check before toggling
+                                                    viewModel.savedSuggestedLocation(mapScreenViewModel.searchSuggestions[index])
+                                                }
+                                                mapScreenViewModel.searchSuggestions[index].isSelected.toggle() // Toggle after checking
+                                            }
+                                            
                                         }
                                     
                                     Spacer().frame(width: 10)
@@ -106,8 +117,8 @@ struct SearchView: View {
             }
         }.onDisappear {
             if(!viewModel.savedLocations.isEmpty) {
-                viewModel.savedLocations.forEach { address in
-                    let _ = SavedLocation(name: "Place", address: address, timestamp: Date(), context: context)
+                viewModel.savedLocations.forEach { location in
+                    let _ = SavedLocation(name: "Place", address: location.address, locationId: location.id, timestamp: Date(), context: context)
                     PersistenceController.shared.save()
                 }
                 
