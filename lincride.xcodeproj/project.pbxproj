@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04CF310E2D6CF82500BFBD2D /* lincride.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lincride.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		04CF310E2D6CF82500BFBD2D /* Linc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Linc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CF31232D6CF82600BFBD2D /* lincrideTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lincrideTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04CF312D2D6CF82600BFBD2D /* lincrideUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lincrideUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -98,7 +98,7 @@
 		04CF310F2D6CF82500BFBD2D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04CF310E2D6CF82500BFBD2D /* lincride.app */,
+				04CF310E2D6CF82500BFBD2D /* Linc.app */,
 				04CF31232D6CF82600BFBD2D /* lincrideTests.xctest */,
 				04CF312D2D6CF82600BFBD2D /* lincrideUITests.xctest */,
 			);
@@ -127,7 +127,7 @@
 			packageProductDependencies = (
 			);
 			productName = lincride;
-			productReference = 04CF310E2D6CF82500BFBD2D /* lincride.app */;
+			productReference = 04CF310E2D6CF82500BFBD2D /* Linc.app */;
 			productType = "com.apple.product-type.application";
 		};
 		04CF31222D6CF82600BFBD2D /* lincrideTests */ = {
@@ -414,7 +414,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lincride/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LincRide;
+				INFOPLIST_KEY_CFBundleDisplayName = Linc;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow use location ";
 				INFOPLIST_KEY_NSLocationUsageDescription = "User wamts to use location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wants to useryour location ";
@@ -429,7 +429,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.lincride;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Linc;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -449,7 +449,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lincride/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LincRide;
+				INFOPLIST_KEY_CFBundleDisplayName = Linc;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow use location ";
 				INFOPLIST_KEY_NSLocationUsageDescription = "User wamts to use location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Wants to useryour location ";
@@ -464,7 +464,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.app.lincride;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Linc;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

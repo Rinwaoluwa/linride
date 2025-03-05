@@ -21,3 +21,4 @@ class SearchViewViewModel {
         self.locationIsSaved = locationIsSaved
     }
 }
+ 
