@@ -11,6 +11,7 @@ import CoreLocation
 
 struct MapView: View {
     @State private var viewModel = ViewModel()
+    @State private var searchViewViewModel = SearchViewViewModel()
     @FetchRequest(fetchRequest: SavedLocation.fetch(), animation: .bouncy) var locations
     @Environment(\.managedObjectContext) var context
     @Environment(\.scenePhase) var scenePhase
@@ -111,7 +112,9 @@ struct MapView: View {
                     .sheet(isPresented: $viewModel.showSearchModal) {
                         //DISMISS
                     } content: {
-                        SearchView(mapScreenViewModel: viewModel).onChange(of: viewModel.searchQuery) { oldValue, newValue in
+                        SearchView(
+                            viewModel: searchViewViewModel,
+                            mapScreenViewModel: viewModel).onChange(of: viewModel.searchQuery) { oldValue, newValue in
                             viewModel.search(for: newValue)
                         }.onSubmit {
                             viewModel.showSearchModal = false

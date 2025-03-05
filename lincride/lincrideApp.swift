@@ -10,9 +10,7 @@ import SwiftUI
 @main
 struct lincrideApp: App {
     let persistenceController = PersistenceController.shared
-    
     @Environment(\.scenePhase) var scenePhase
-
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -24,3 +22,4 @@ struct lincrideApp: App {
         }
     }
 }
+

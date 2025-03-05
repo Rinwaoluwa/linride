@@ -9,8 +9,9 @@ import SwiftUI
 import MapKit
 
 struct SearchView: View {
+    let viewModel: SearchViewViewModel
     @State var mapScreenViewModel: MapView.ViewModel
-    @State private var viewModel = SearchViewViewModel()
+//    @State private var viewModel = SearchViewViewModel()
     @FocusState private var isFocused: Bool
     
     @Environment(\.managedObjectContext) var context

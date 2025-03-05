@@ -29,33 +29,31 @@ extension SavedLocation {
         set { locationId_ = newValue }
     }
     
-    
-    
     convenience init(
         name: String,
         address: String,
         locationId: String,
-                     timestamp: Date,
-                     context: NSManagedObjectContext) {
-        self.init(context: context)
-        self.name = name
-        self.address = address
-        self.timestamp = timestamp
-        self.locationId = locationId
-    }
+        timestamp: Date,
+        context: NSManagedObjectContext) {
+            self.init(context: context)
+            self.name = name
+            self.address = address
+            self.timestamp = timestamp
+            self.locationId = locationId
+        }
     
     static func delete(location: SavedLocation) {
-          guard let context = location.managedObjectContext else { return }
-          context.delete(location)
-      }
-      
-      static func fetch(_ predicate: NSPredicate = .all) -> NSFetchRequest<SavedLocation> {
-          let request = SavedLocation.fetchRequest()
-          request.sortDescriptors = [NSSortDescriptor(keyPath: \SavedLocation.timestamp_, ascending: true),
-                                     NSSortDescriptor(keyPath: \SavedLocation.name_, ascending: true)]
-          request.predicate = predicate
-          
-          return request
-      }
+        guard let context = location.managedObjectContext else { return }
+        context.delete(location)
+    }
+    
+    static func fetch(_ predicate: NSPredicate = .all) -> NSFetchRequest<SavedLocation> {
+        let request = SavedLocation.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \SavedLocation.timestamp_, ascending: true),
+                                   NSSortDescriptor(keyPath: \SavedLocation.name_, ascending: true)]
+        request.predicate = predicate
+    
+        return request
+    }
     
 }

@@ -9,9 +9,6 @@ import SwiftUI
 import MapKit
 
 struct LookAroundView: View {
-    //    let lookAroundScene: MKLookAroundScene?
-    //    let selectedResult: MKMapItem?
-    //    let route: MKRoute?
     var viewModel: MapView.ViewModel
     
     private var travelTime: String? {
