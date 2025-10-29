@@ -1,10 +1,3 @@
-//
-//  MapView.swift
-//  lincride
-//
-//  Created by Adeoluwa on 24/02/2025.
-//
-
 import SwiftUI
 import MapKit
 import CoreLocation
@@ -59,6 +52,15 @@ struct MapView: View {
                 Text("Please grant location permission in settings to use LincRide.")
             }
             .ignoresSafeArea(edges: .bottom)
+            
+            // MARK: - Error View
+            // Show error overlay when error occurs
+            if viewModel.showError, let errorModel = viewModel.errorPageModel {
+                ErrorView(model: errorModel)
+                    .background(.ultraThinMaterial)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            
             // Custom bottom sheet
             BottomSheet (showSheet: $viewModel.showSheet){
                 VStack(spacing:0) {
@@ -130,7 +132,3 @@ struct MapView: View {
         }
     }
 }
-    
-//#Preview {
-//    MapView()
-//}

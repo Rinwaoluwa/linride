@@ -1,10 +1,3 @@
-//
-//  SearchView.swift
-//  lincride
-//
-//  Created by Adeoluwa on 25/02/2025.
-//
-
 import SwiftUI
 import MapKit
 
@@ -63,17 +56,23 @@ struct SearchView: View {
                 if mapScreenViewModel.isLoadingLocation {
                     LoadingView()
                 }
-                
-                if mapScreenViewModel.searchSuggestions.isEmpty && !$mapScreenViewModel.searchQuery.wrappedValue.isEmpty && !mapScreenViewModel.isLoadingLocation {
+                if mapScreenViewModel.showError, let errorModel = mapScreenViewModel.errorPageModel {
+                    ErrorView(model: errorModel)
+                        .padding(.top, 40)
+                } else if mapScreenViewModel.searchSuggestions.isEmpty && !$mapScreenViewModel.searchQuery.wrappedValue.isEmpty && !mapScreenViewModel.isLoadingLocation {
                     VStack(spacing: 10) {
                         Spacer()
-                        Image(systemName: "multiply.circle")
-                            .font(.system(size: 30))
-                            .foregroundColor(.red)
-                        
-                        Text("No location found")
-                            .font(.headline)
+                        Image(systemName: "mappin.slash")
+                            .font(.system(size: 50))
                             .foregroundColor(.gray)
+                        
+                        Text("No Results Found")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        
+                        Text("Try searching for a different location")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                         Spacer()
                         
                     }
@@ -128,13 +127,3 @@ struct SearchView: View {
     }
 }
 
-//#Preview {
-//    @State var search = ""
-//    SearchView(searchText: $search, suggestions: [String]()) {
-//    } onCancel: {
-//
-//    } onTapSuggestion: { suggestion in
-//        print("SUGGESTION: \(suggestion)")
-//    }
-//
-//}

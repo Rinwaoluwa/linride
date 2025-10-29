@@ -1,10 +1,3 @@
-//
-//  SavedLocation+Helper.swift
-//  lincride
-//
-//  Created by Adeoluwa on 26/02/2025.
-//
-
 import Foundation
 import CoreData
 
@@ -43,8 +36,12 @@ extension SavedLocation {
         }
     
     static func delete(location: SavedLocation) {
-        guard let context = location.managedObjectContext else { return }
+        guard let context = location.managedObjectContext else {
+            DefaultLogger.shared.warning("No managed object context for deletion", category: .database)
+            return
+        }
         context.delete(location)
+        DefaultLogger.shared.info("Location deleted successfully", category: .database)
     }
     
     static func fetch(_ predicate: NSPredicate = .all) -> NSFetchRequest<SavedLocation> {
