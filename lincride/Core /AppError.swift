@@ -11,7 +11,7 @@ enum LocationError: Error, LocalizedError, CustomStringConvertible {
     var errorDescription: String? {
         switch self {
         case .permissionDenied:
-            return "Location access is needed to use LincRide"
+            return "Location access is needed to use Linc"
         case .locationUnavailable:
             return "Unable to get your location"
         case .locationUpdateFailed:
@@ -68,7 +68,6 @@ enum SearchError: Error, LocalizedError, CustomStringConvertible {
 
 // MARK: - Database Errors
 /// Errors related to CoreData operations
-/// Follows Firefox's DatabaseError pattern
 enum DatabaseError: Error, LocalizedError, CustomStringConvertible {
     case saveFailed(String)
     case deleteFailed(String)

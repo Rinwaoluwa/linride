@@ -3,7 +3,7 @@ import MapKit
 import CoreLocation
 
 struct MapView: View {
-    @State private var viewModel = ViewModel()
+    @StateObject private var viewModel = ViewModel()
     @State private var searchViewViewModel = SearchViewViewModel()
     @FetchRequest(fetchRequest: SavedLocation.fetch(), animation: .bouncy) var locations
     @Environment(\.managedObjectContext) var context
@@ -27,7 +27,7 @@ struct MapView: View {
                 MapUserLocationButton()
                 MapCompass()
                 MapScaleView()
-            }.onMapCameraChange(frequency: .continuous, { context in
+            }.onMapCameraChange(frequency: .onEnd, { context in
                 viewModel.updateRegion(to: context.region)
             }).overlay(alignment: .topTrailing, content: {
                 if let _ = viewModel.selectedLocation {
@@ -61,9 +61,10 @@ struct MapView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
             
-            // Custom bottom sheet
-            BottomSheet (showSheet: $viewModel.showSheet){
-                VStack(spacing:0) {
+            BottomSheet(showSheet: $viewModel.showSheet) {
+                
+                VStack(spacing: 0) {
+                    // Note: keep TextField disabled until user taps it
                     TextField("Search Location", text: $viewModel.searchQuery)
                         .padding()
                         .frame(height: 40)
@@ -75,29 +76,31 @@ struct MapView: View {
                                 viewModel.showSearchModal.toggle()
                             }
                         }
+                    
                     FavoritesView { favoriteItem in
                         viewModel.search(for: favoriteItem.value)
                         viewModel.searchQuery = favoriteItem.value
                         viewModel.showSheet = false
                     }
+                    
                     Spacer().frame(height: 8)
-                    // Horizontal LazyScrollView Section
+                    
                     List {
-                        Section(header: Text(locations.isEmpty ? "" :"Saved Location").font(.headline)) {
+                        Section(header: Text(locations.isEmpty ? "" : "Saved Location").font(.headline)) {
                             ForEach(locations, content: { place in
-                                
                                 HStack {
                                     Image(systemName: "bookmark")
                                         .font(.system(size: 20))
                                         .foregroundColor(.accentColor)
                                         .padding(.leading, -5)
                                     Text(place.address)
-                                }.listRowBackground(Color.clear)
-                                    .onTapGesture {
-                                        viewModel.search(for: place.address)
-                                        viewModel.showSheet = false
-                                        viewModel.searchQuery = place.address
-                                    }
+                                }
+                                .listRowBackground(Color.clear)
+                                .onTapGesture {
+                                    viewModel.search(for: place.address)
+                                    viewModel.showSheet = false
+                                    viewModel.searchQuery = place.address
+                                }
                             })
                             .onDelete { offsets in
                                 if let index = offsets.first {
@@ -107,21 +110,22 @@ struct MapView: View {
                                 }
                             }
                         }
-                    }.scrollContentBackground(.hidden)
-                        .scrollIndicators(.hidden)
-                    
-                }.padding(.horizontal)
-                    .sheet(isPresented: $viewModel.showSearchModal) {
-                        //DISMISS
-                    } content: {
-                        SearchView(
-                            viewModel: searchViewViewModel,
-                            mapScreenViewModel: viewModel).onChange(of: viewModel.searchQuery) { oldValue, newValue in
+                    }
+                    .scrollContentBackground(.hidden)
+                    .scrollIndicators(.hidden)
+                }
+                .padding(.horizontal)
+                .sheet(isPresented: $viewModel.showSearchModal) {
+                    // DISMISS
+                } content: {
+                    SearchView(viewModel: searchViewViewModel, mapScreenViewModel: viewModel)
+                        .onChange(of: viewModel.searchQuery) { _, newValue in
                             viewModel.search(for: newValue)
-                        }.onSubmit {
+                        }
+                        .onSubmit {
                             viewModel.showSearchModal = false
                         }
-                    }
+                }
             }
         }.onChange(of: scenePhase) { oldValue, newValue in
             if newValue == .active  {

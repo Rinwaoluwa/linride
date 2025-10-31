@@ -29,7 +29,6 @@ struct ErrorPageModel {
 
 // MARK: - Error Page Factory
 /// Factory for creating error pages from errors
-/// Inspired by Firefox's error handling approach
 struct ErrorPageFactory {
     
     static func makeErrorPage(
@@ -65,7 +64,7 @@ struct ErrorPageFactory {
         case .permissionDenied:
             return ErrorPageModel(
                 errorTitle: "Location Access Needed",
-                errorDescription: "LincRide needs your location to show nearby places and give directions.",
+                errorDescription: "Linc needs your location to show nearby places and give directions.",
                 iconName: "location.slash.fill",
                 retryAction: nil,
                 secondaryAction: secondaryAction,

@@ -1,10 +1,3 @@
-//
-//  BottomSheet.swift
-//  lincride
-//
-//  Created by Adeoluwa on 25/02/2025.
-//
-
 import SwiftUI
 
 struct BottomSheet<Content: View>: View {
@@ -17,11 +10,7 @@ struct BottomSheet<Content: View>: View {
     private let mediumDetent = UIScreen.main.bounds.height * 0.8
     private let smallDetent = UIScreen.main.bounds.height * 0.4
     
-    init(
-        showSheet: Binding<Bool>,
-        content: @escaping () -> Content
-        
-    ) {
+    init(showSheet: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self._showSheet = showSheet
     }
@@ -59,7 +48,6 @@ struct BottomSheet<Content: View>: View {
                             }
                     )
                 
-                // Your bottom sheet content here
                 content()
                 
                 Spacer()
@@ -93,9 +81,3 @@ struct RoundedCornerShape: Shape {
         return Path(path.cgPath)
     }
 }
-
-//#Preview {
-//    BottomSheet {
-//        Text("TESTING")
-//    }
-//}

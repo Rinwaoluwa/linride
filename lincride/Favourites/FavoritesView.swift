@@ -1,10 +1,3 @@
-//
-//  FavoritesView.swift
-//  lincride
-//
-//  Created by Adeoluwa on 25/02/2025.
-//
-
 import SwiftUI
 
 import SwiftUI

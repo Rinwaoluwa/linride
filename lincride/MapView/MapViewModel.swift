@@ -4,28 +4,27 @@ import SwiftUI
 import MapKit
 
 extension MapView {
-    @Observable
-    class ViewModel: NSObject, CLLocationManagerDelegate {
-        var searchQuery = ""
-        var selectedLocation: MKMapItem?
-        var showSearchModal: Bool = false
-        private(set) var isLoadingLocation: Bool = false
-        var position: MapCameraPosition = .userLocation(followsHeading: true, fallback: .automatic)
-        var locationAuthorized: Bool? = nil
-        var showAlert = false
-        var showSheet = false
-        private(set) var lookAroundScene: MKLookAroundScene?
-        private(set) var route: MKRoute?
-        var searchSuggestions: [SearchSuggestion] = [SearchSuggestion]()
-        private(set)  var searchResults: [MKMapItem] = [MKMapItem]()
-        private(set) var region: MKCoordinateRegion?
+    class ViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+        @Published var searchQuery = ""
+        @Published var selectedLocation: MKMapItem?
+        @Published var showSearchModal: Bool = false
+        @Published private(set) var isLoadingLocation: Bool = false
+        @Published var position: MapCameraPosition = .userLocation(followsHeading: true, fallback: .automatic)
+        @Published var locationAuthorized: Bool? = nil
+        @Published var showAlert = false
+        @Published var showSheet = false
+        @Published private(set) var lookAroundScene: MKLookAroundScene?
+        @Published private(set) var route: MKRoute?
+        @Published var searchSuggestions: [SearchSuggestion] = [SearchSuggestion]()
+        @Published private(set) var searchResults: [MKMapItem] = [MKMapItem]()
+        @Published private(set) var region: MKCoordinateRegion?
         private let locationManager = CLLocationManager()
         private let lagosCoordinates = CLLocationCoordinate2D(latitude: 6.5244, longitude: 3.3792)
         
         // MARK: - Error Handling
-        var currentError: Error?
-        var showError: Bool = false
-        var errorPageModel: ErrorPageModel?
+        @Published var currentError: Error?
+        @Published var showError: Bool = false
+        @Published var errorPageModel: ErrorPageModel?
         private let logger: Logger = DefaultLogger.shared
         
         override init() {
